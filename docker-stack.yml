@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # 1. Python Worker Service 🐍
+  worker-python:
+    image: worker-python:latest
+    networks:
+      - polyglot-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+
+  # 2. Catalog API Service (.NET Core Backend) 🖥️
+  catalog-api:
+    image: eshop-catalogapi:latest
+    ports:
+      - "5002:5002"
+    networks:
+      - polyglot-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+
+  # 3. WebApp Frontend Backend (.NET UI) 🌐
+  webapp:
+    image: eshop-webapp:latest
+    ports:
+      - "5000:5000"
+    networks:
+      - polyglot-network
+    depends_on:
+      - catalog-api
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+
+  # 4. JavaScript/React Frontend ⚛️
+  frontend-js:
+    image: frontend-js:latest
+    ports:
+      - "5173:5173"
+    networks:
+      - polyglot-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+
+networks:
+  polyglot-network:
+    driver: overlay
