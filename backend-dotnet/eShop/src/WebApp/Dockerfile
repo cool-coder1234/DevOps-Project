@@ -2,10 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Pura eShop folder copy karein taake solution aur dependencies mil sakein
-COPY backend-dotnet/eShop/ ./
+# Pura eShop folder sahi directory structure ke sath copy karein
+COPY backend-dotnet/eShop/ ./backend-dotnet/eShop/
 
-# WebApp project ko publish karein (yeh 'out' folder khud banaye ga)
+# Working directory ko eShop folder ke andar le jayein taake saari internal dependency paths sahi rahein
+WORKDIR /src/backend-dotnet/eShop
+
+# Sahi path ke sath project publish karein
 RUN dotnet publish src/WebApp/WebApp.csproj -c Release -o /app/publish
 
 # 2. Runtime image par switch karein ge final size chota rakhne ke liye
