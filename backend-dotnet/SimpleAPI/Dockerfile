@@ -1,14 +1,18 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Disable tracking configurations 
+# Force complete isolation and clear environment
 ENV DISABLE_CPM=true
 ENV DOTNET_WORKSPACE_ROOT=/src
+ENV DOTNET_RUNNING_IN_CONTAINER=true
 
-# Zero quotes used here to stop syntax errors
+# Copy project file
 COPY SimpleAPI.csproj .
-RUN dotnet restore SimpleAPI.csproj
 
+# Force target official nuget source directly to bypass any proxy/local configs
+RUN dotnet restore SimpleAPI.csproj --source https://api.nuget.org/v3/index.json
+
+# Copy rest of the code and publish
 COPY . .
 RUN dotnet publish SimpleAPI.csproj -c Release -o /app/publish --no-restore
 
