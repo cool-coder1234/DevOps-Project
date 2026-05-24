@@ -17,10 +17,38 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and Push WebApp Image
+    # 1. Build and Push WebApp
+    - name: Build and Push WebApp
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: backend-dotnet/eShop/src/WebApp/Dockerfile
+        file: ./backend-dotnet/eShop/src/WebApp/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/eshop-webapp:latest
+
+    # 2. Build and Push Catalog API
+    - name: Build and Push Catalog API
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./backend-dotnet/eShop/src/Catalog.API/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/eshop-catalogapi:latest
+
+    # 3. Build and Push Python Worker 🐍
+    - name: Build and Push Python Worker
+      uses: docker/build-push-action@v4
+      with:
+        context: ./worker-python
+        file: ./worker-python/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/worker-python:latest
+
+    # 4. Build and Push React Frontend ⚛️
+    - name: Build and Push React Frontend
+      uses: docker/build-push-action@v4
+      with:
+        context: ./frontend-js
+        file: ./frontend-js/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend-js:latest
