@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "V/AAcryY97M=",
+  "success": true,
+  "projectFilePath": "/home/mk2487593/polyglot-cloud-migration/backend-dotnet/SimpleAPI/SimpleAPI.csproj",
+  "expectedPackageFiles": [
+    "/home/mk2487593/.nuget/packages/microsoft.aspnetcore.openapi/10.0.8/microsoft.aspnetcore.openapi.10.0.8.nupkg.sha512",
+    "/home/mk2487593/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
