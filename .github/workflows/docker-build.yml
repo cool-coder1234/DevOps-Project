@@ -9,17 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+
+    # 🛠️ IS STEP KA HONA LAZMI HAI (Buildx setup karega taake cache error khatam ho)
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
     - name: Login to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     # 1. Build and Push WebApp 🌐
     - name: Build and Push WebApp
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
         context: ./backend-dotnet/eShop
         file: ./backend-dotnet/eShop/src/WebApp/Dockerfile
@@ -28,7 +32,7 @@ jobs:
 
     # 2. Build and Push Catalog API 📦
     - name: Build and Push Catalog API
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
         context: ./backend-dotnet/eShop
         file: ./backend-dotnet/eShop/src/Catalog.API/Dockerfile
@@ -37,7 +41,7 @@ jobs:
 
     # 3. Build and Push Python Worker 🐍
     - name: Build and Push Python Worker
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
         context: ./worker-python
         file: ./worker-python/Dockerfile
@@ -46,7 +50,7 @@ jobs:
 
     # 4. Build and Push React Frontend ⚛️
     - name: Build and Push React Frontend
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
         context: ./frontend-js
         file: ./frontend-js/Dockerfile
