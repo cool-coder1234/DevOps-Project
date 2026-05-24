@@ -1,22 +1,19 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Force complete isolation and clear environment
+# Disable external tracking configurations strictly
 ENV DISABLE_CPM=true
 ENV DOTNET_WORKSPACE_ROOT=/src
-ENV DOTNET_RUNNING_IN_CONTAINER=true
 
-# Copy project file
+# Copy project and restore using .NET 9 SDK
 COPY SimpleAPI.csproj .
+RUN dotnet restore SimpleAPI.csproj
 
-# Force target official nuget source directly to bypass any proxy/local configs
-RUN dotnet restore SimpleAPI.csproj --source https://api.nuget.org/v3/index.json
-
-# Copy rest of the code and publish
+# Copy all code and compile
 COPY . .
 RUN dotnet publish SimpleAPI.csproj -c Release -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
