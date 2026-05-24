@@ -27,3 +27,4 @@ jobs:
         file: ./backend-dotnet/SimpleAPI/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/simple-backend:latest
+        network: host

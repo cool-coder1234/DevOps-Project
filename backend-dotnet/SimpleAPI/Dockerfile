@@ -1,16 +1,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Disable external solution lookups completely
+# Central Package Management override
 ENV DISABLE_CPM=true
 ENV DOTNET_WORKSPACE_ROOT=/src
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-# Create standard empty solution wrapper inside container to trick the .NET engine
-COPY SimpleAPI.csproj ./
-RUN dotnet new sln && dotnet sln add SimpleAPI.csproj && dotnet restore SimpleAPI.csproj
+# Pure and standard vanilla copy-restore
+COPY SimpleAPI.csproj .
+RUN dotnet restore SimpleAPI.csproj
 
-# Copy all source files and publish cleanly
 COPY . .
 RUN dotnet publish SimpleAPI.csproj -c Release -o /app/publish --no-restore
 
