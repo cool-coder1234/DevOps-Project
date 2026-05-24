@@ -17,7 +17,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # 1. Build and Push WebApp
+    # 1. Build and Push WebApp 🌐
     - name: Build and Push WebApp
       uses: docker/build-push-action@v4
       with:
@@ -26,7 +26,7 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/eshop-webapp:latest
 
-    # 2. Build and Push Catalog API
+    # 2. Build and Push Catalog API 📦
     - name: Build and Push Catalog API
       uses: docker/build-push-action@v4
       with:
