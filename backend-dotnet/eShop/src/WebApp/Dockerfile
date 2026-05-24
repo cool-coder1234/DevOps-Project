@@ -1,11 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Pure backend-dotnet folder ko context ke mutabiq copy karein
+# Sahi dependency processing ke liye pura folder copy karein
 COPY . .
 
-# Ab accurate path par ja kar publish karein
-RUN dotnet publish "backend-dotnet/eShop/src/WebApp/WebApp.csproj" -c Release -o /app/publish
+# Puraane steps aur double quotes ka issue fix kar ke direct project compile karein
+RUN dotnet publish src/WebApp/WebApp.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
