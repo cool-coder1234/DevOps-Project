@@ -1,13 +1,13 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Sahi dependency processing ke liye pura folder copy karein
+# Sahi context ke sath saari sub-folders aur props files image mein le kar aayen
 COPY . .
 
-# Puraane steps aur double quotes ka issue fix kar ke direct project compile karein
+# Ab bilkul stable framework package restore aur publish hoga
 RUN dotnet publish src/WebApp/WebApp.csproj -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
