@@ -1,14 +1,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Central Package Management override
+# Force .NET to completely ignore ANY Directory.Build.props or Directory.Packages.props
+ENV IMPORT_DIRECTORY_BUILD_PROPS=false
+ENV IMPORT_DIRECTORY_PACKAGES_PROPS=false
 ENV DISABLE_CPM=true
 ENV DOTNET_WORKSPACE_ROOT=/src
 
-# Pure and standard vanilla copy-restore
+# Copy project file cleanly
 COPY SimpleAPI.csproj .
 RUN dotnet restore SimpleAPI.csproj
 
+# Copy everything else and publish
 COPY . .
 RUN dotnet publish SimpleAPI.csproj -c Release -o /app/publish --no-restore
 
