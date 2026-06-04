@@ -1,30 +1,63 @@
-name: Build and Push Simple Backend
+name: Build and Push Images
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build-and-push:
+  backend:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and Push Simple API
-      uses: docker/build-push-action@v6
-      with:
-        context: ./backend-dotnet/SimpleAPI
-        file: ./backend-dotnet/SimpleAPI/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/simple-backend:latest
-        network: host
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./backend-dotnet/SimpleAPI
+          file: ./backend-dotnet/SimpleAPI/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/simple-backend:latest
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./frontend-js
+          file: ./frontend-js/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend-js:latest
+
+  worker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./worker-python
+          file: ./worker-python/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/worker-python:latest
