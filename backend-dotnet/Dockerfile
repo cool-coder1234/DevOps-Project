@@ -1,14 +1,19 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY eShop/ .
-RUN dotnet restore eShop.Web.slnf
-RUN dotnet publish -c Release -o /app/publish
 
-FROM base AS final
+COPY SimpleAPI/ .
+
+RUN dotnet restore SimpleAPI.csproj
+
+RUN dotnet publish SimpleAPI.csproj -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
 WORKDIR /app
+
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "eShop.dll"]
+
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet","SimpleAPI.dll"]

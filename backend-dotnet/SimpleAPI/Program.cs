@@ -1,15 +1,18 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.AddPolicy("CustomPolicy",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://74.235.72.123:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
 });
 
 var app = builder.Build();
@@ -19,11 +22,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseCors();
+app.UseCors("CustomPolicy");
 
 var summaries = new[]
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    "Freezing", "Bracing", "Chilly", "Cool", "Mild",
+    "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
 app.MapGet("/weatherforecast", () =>
@@ -36,11 +40,13 @@ app.MapGet("/weatherforecast", () =>
             summaries[Random.Shared.Next(summaries.Length)]
         ))
         .ToArray();
+
     return forecast;
 })
 .WithName("GetWeatherForecast");
 
-app.MapGet("/auth/me", () => Results.Ok(new {
+app.MapGet("/auth/me", () => Results.Ok(new
+{
     id = "1",
     email = "admin@example.com",
     firstName = "Admin",
@@ -48,7 +54,8 @@ app.MapGet("/auth/me", () => Results.Ok(new {
     role = "ADMIN"
 }));
 
-app.MapGet("/api/status", () => Results.Ok(new {
+app.MapGet("/api/status", () => Results.Ok(new
+{
     status = "running",
     version = "1.0.0"
 }));
